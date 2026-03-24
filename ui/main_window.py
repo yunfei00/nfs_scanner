@@ -8,6 +8,7 @@ from PySide6.QtWidgets import (
     QWidget,
     QStatusBar,
     QTextEdit,
+    QTabWidget,
 )
 from PySide6.QtCore import Qt
 
@@ -16,6 +17,7 @@ from infra.license_manager import LicenseManager
 from core.device_manager import DeviceManager
 from core.scan_manager import ScanManager
 from .controls_panel import ControlsPanel
+from .serial_debug_page import SerialDebugPage
 
 
 class MainWindow(QMainWindow):
@@ -39,10 +41,17 @@ class MainWindow(QMainWindow):
     def _setup_ui(self) -> None:
         self.resize(1000, 700)
 
+        tabs = QTabWidget(self)
+
         center = QTextEdit(self)
         center.setReadOnly(True)
         center.setPlainText("阶段0/1：这里将来是热力图视图")
-        self.setCentralWidget(center)
+        tabs.addTab(center, "主扫描视图")
+
+        serial_debug = SerialDebugPage(self)
+        tabs.addTab(serial_debug, "串口调试页面")
+
+        self.setCentralWidget(tabs)
 
         controls = ControlsPanel(
             config_manager=self._config_manager,
